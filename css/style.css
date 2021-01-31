@@ -1,3 +1,11 @@
-.foo {
-  color: blue;
+button {
+  transition: transform 0.1s cubic-bezier(0.55, 0.06, 0.68, 0.19);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:focus {
+  outline: 2px solid transparent !important;
 }

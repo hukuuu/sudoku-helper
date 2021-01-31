@@ -45,20 +45,33 @@
                      (:repeat-digits @state)))}
    :Calculate])
 
+(defn styled-input [props]
+  (let [added {:class [:text-center :px-2 :py-1 :rounded-lg :w-52 :focus-ring-2 :focus-ring-blue-400]
+               :on-focus #(-> % .-target .select)}]
+    (into [:input] (list (into props added)))))
+
+(defn update-num [state key]
+  (fn [event]
+    (let [n (-> event .-target .-value js/Number)]
+      (when-not (js/isNaN n)
+        (swap! state assoc key n)))))
+
 (defn target []
-  [:input.text-center.px-2.py-1.rounded-lg.w-52.focus-ring-2.focus-ring-blue-400
-   {:value (:target @state)
-    :on-change #(swap! state assoc :target (-> % .-target .-value js/Number))}])
+  [styled-input {:value (:target @state)
+                 :on-change (update-num state :target)}])
 
 (defn digits []
-  [:input.text-center.px-2.py-1.rounded-lg.w-52.focus-ring-2.focus-ring-blue-400
+  [styled-input
    {:value (:digits @state)
-    :on-change #(swap! state assoc :digits (-> % .-target .-value js/Number))}])
+    :on-change (update-num state :digits)}])
 
 (defn num [n on toggle]
-  [:button.font-semibold.font-sans.focus:outline-none.text-white.mx-1.w-10.h-10.rounded-full.w-4.flex.justify-center.items-center.px-3
+  [:button
    {:on-click toggle
-    :class [(if on :bg-blue-400 :bg-gray-400)]}
+    :class [:font-semibold :font-sans
+            :text-white :mx-1 :w-10 :h-10 :rounded-full :w-4
+            :flex :justify-center :items-center :px-3
+            (if on :bg-blue-400 :bg-gray-400)]}
    n])
 
 (defn include []
